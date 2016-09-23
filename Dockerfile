@@ -30,7 +30,7 @@ RUN mkdir -p /src  && \
       -DUSE_RUN_CC_PL:BOOLEAN=ON \
       -DUSE_PCH:BOOLEAN=ON .. && \
     make && \
-    make install
+    make install && \
     apt-get -y remove build-essential cmake && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/*
