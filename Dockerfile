@@ -1,26 +1,20 @@
-FROM ubuntu:16.10
+FROM ubuntu:14.04
 MAINTAINER Borja Maceira <ant@antweb.es>
 ENV REFRESHED_AT 2016-09-22
 ENV VERSION 0.0.1
-ENV DEBIAN_FRONTEND noninteractive 
+ENV DEBIAN_FRONTEND noninteractive
+ENV ANOPE_VERSION 2.0.4 
 
 
-RUN apt-get update && apt-get install -y -o Dpkg::Options::="--force-confdef" \
-    build-essential \
-    libssl-dev \
-    libmysqlclient-dev \    
-    cmake \
-    make \
-    unzip \
-    curl \
-    gettext \
-    --no-install-recommends && \
-    useradd -u 10000 -d /anope/ anope && \
+RUN apt-get update && \
+    apt-get install -y build-essential curl libgnutls-dev libssl-dev ca-certificates cmake libpcre3-dev libmysqlclient-dev mysql-client unzip wget gettext --no-install-recommends
+
+ RUN useradd -u 10000 -d /anope/ anope && \
     gpasswd -a anope irc  && \
-    curl -s --location https://github.com/anope/anope/archive/2.0.4.zip && \
-    unzip 2.0.4.zip && \ 
-    rm /2.0.4.zip && \ 
-    mv /anope-2.0.4 /src/anope && \
+    curl -s --location https://github.com/anope/anope/releases/download/$ANOPE_VERSION/anope-$ANOPE_VERSION-source.tar.gz | tar xz
+
+RUN mkdir -p /src  && \
+    mv anope-$ANOPE_VERSION-source /src/anope && \
     cd /src/anope/ && \    
     mv modules/extra/m_mysql.cpp modules/ && \
     mv modules/extra/m_sql_oper.cpp modules/ && \
